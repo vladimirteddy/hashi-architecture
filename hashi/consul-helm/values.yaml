@@ -62,9 +62,9 @@ server:
   bootstrapExpect: 1
 
   # Storage settings - the server needs persistent storage for data
-  storage:
-    enabled: false
-    # Remove any lingering storage configurations to avoid parsing issues
+  # storage:
+  #   enabled: false
+  #   # Ensure there are no lingering storage configurations
 
   # Resource limits and requests
   resources:
