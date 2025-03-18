@@ -19,6 +19,12 @@ if ! command -v kubectl &> /dev/null; then
   exit 1
 fi
 
+# Check helm
+if ! command -v helm &> /dev/null; then
+  echo "Error: helm command not found. Please install helm first."
+  exit 1
+fi
+
 # Create namespace if it doesn't exist
 echo "Creating namespace $NAMESPACE..."
 kubectl create namespace $NAMESPACE --dry-run=client -o yaml | kubectl apply -f -
@@ -30,13 +36,13 @@ if ! helm repo list | grep -q "https://helm.releases.hashicorp.com"; then
   helm repo update
 fi
 
-# Using custom values file or our simplified values
-if [[ -n "$VALUES_FILE" && -f "$VALUES_FILE" ]]; then
-  echo "Using custom values file: $VALUES_FILE"
-  helm install $RELEASE_NAME hashicorp/consul --namespace $NAMESPACE -f "$VALUES_FILE"
+# Using values.yaml file for configuration
+if [[ -f "$SCRIPT_DIR/consul-helm/values.yaml" ]]; then
+  echo "Using values.yaml file for configuration"
+  helm upgrade --install $RELEASE_NAME hashicorp/consul --namespace $NAMESPACE -f "$SCRIPT_DIR/consul-helm/values.yaml"
 else
-  echo "Using default values file from our directory"
-  helm install $RELEASE_NAME hashicorp/consul --namespace $NAMESPACE -f "$SCRIPT_DIR/consul-helm/values.yaml"
+  echo "Error: values.yaml file not found in $SCRIPT_DIR/consul-helm/"
+  exit 1
 fi
 
 echo ""
