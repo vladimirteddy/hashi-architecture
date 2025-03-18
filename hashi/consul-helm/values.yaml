@@ -58,6 +58,9 @@ server:
   # Use 3 or 5 for production
   # replicas: 3
 
+  # Bootstrap expect should match replicas
+  bootstrapExpect: 1
+
   # Storage settings - the server needs persistent storage for data
   storage:
     enabled: false # Disable storage for now to simplify
@@ -72,17 +75,7 @@ server:
       memory: "200Mi"
 
   # Affinity for server pod placement
-  affinity: |
-    podAntiAffinity:
-      preferredDuringSchedulingIgnoredDuringExecution:
-      - weight: 100
-        podAffinityTerm:
-          labelSelector:
-            matchLabels:
-              app: {{ template "consul.name" . }}
-              release: "{{ .Release.Name }}"
-              component: server
-          topologyKey: kubernetes.io/hostname
+  affinity: null
 
   # Expose servers using a ClusterIP service
   service:
