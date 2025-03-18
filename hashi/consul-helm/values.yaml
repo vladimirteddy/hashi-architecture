@@ -12,8 +12,8 @@ global:
 
   # TLS configuration
   tls:
-    enabled: true
-    enableAutoEncrypt: true
+    enabled: false
+    # enableAutoEncrypt: true
     # You can provide custom certificates or let Consul generate them
     # caCert:
     # caKey:
@@ -21,9 +21,9 @@ global:
   # ACL configuration
   acls:
     # Enable ACL system
-    manageSystemACLs: true
+    manageSystemACLs: false
     # Allow token replication from primary datacenter
-    tokenReplication: true
+    # tokenReplication: true
     # Bootstrap token - will be auto-generated if not provided
     # bootstrapToken:
 
@@ -60,18 +60,16 @@ server:
 
   # Storage settings - the server needs persistent storage for data
   storage:
-    enabled: true
-    size: "10Gi"
-    storageClass: null # Use default StorageClass
+    enabled: false # Disable storage for now to simplify
 
   # Resource limits and requests
   resources:
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: "100m"
+      memory: "100Mi"
     limits:
-      cpu: 200m
-      memory: 200Mi
+      cpu: "200m"
+      memory: "200Mi"
 
   # Affinity for server pod placement
   affinity: |
@@ -108,11 +106,11 @@ client:
   # Resource limits and requests
   resources:
     requests:
-      cpu: 100m
-      memory: 100Mi
+      cpu: "100m"
+      memory: "100Mi"
     limits:
-      cpu: 200m
-      memory: 200Mi
+      cpu: "200m"
+      memory: "200Mi"
 
   # DaemonSet configuration (default is true to deploy clients on all nodes)
   # Can be set to false to use a deployment instead
@@ -148,11 +146,11 @@ connectInject:
   # Resource settings for the injector
   resources:
     requests:
-      cpu: 50m
-      memory: 50Mi
+      cpu: "50m"
+      memory: "50Mi"
     limits:
-      cpu: 50m
-      memory: 50Mi
+      cpu: "50m"
+      memory: "50Mi"
 
 ## Consul Controller configuration
 controller:
@@ -161,11 +159,11 @@ controller:
   # Resource settings for the controller
   resources:
     requests:
-      cpu: 50m
-      memory: 50Mi
+      cpu: "50m"
+      memory: "50Mi"
     limits:
-      cpu: 50m
-      memory: 50Mi
+      cpu: "50m"
+      memory: "50Mi"
 
 ## UI configuration
 ui:
@@ -203,11 +201,11 @@ syncCatalog:
   # Resource settings
   resources:
     requests:
-      cpu: 50m
-      memory: 50Mi
+      cpu: "50m"
+      memory: "50Mi"
     limits:
-      cpu: 50m
-      memory: 50Mi
+      cpu: "50m"
+      memory: "50Mi"
 
 ## DNS settings
 dns:
