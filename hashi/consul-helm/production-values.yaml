@@ -1,0 +1,102 @@
+global:
+  name: consul
+  datacenter: dc1
+  image: "hashicorp/consul:1.16.0"
+  imageK8S: "hashicorp/consul-k8s-control-plane:1.2.0"
+
+  # Enable TLS for secure communication
+  tls:
+    enabled: true
+    enableAutoEncrypt: true
+
+  # Enable ACLs for service-to-service authentication
+  acls:
+    manageSystemACLs: true
+
+  # Enable metrics for monitoring
+  metrics:
+    enabled: true
+    enableAgentMetrics: true
+
+# Use 3 replicas for high availability
+server:
+  replicas: 3
+
+  # Add resource constraints
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "250m"
+    limits:
+      memory: "512Mi"
+      cpu: "500m"
+
+  # Configure persistent storage
+  storage:
+    enabled: true
+    size: 10Gi
+    # Use a specific storage class for production
+    # storageClass: "premium-ssd"
+
+# Configure Consul clients
+client:
+  enabled: true
+  grpc: true
+
+  # Add resource constraints
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "200m"
+
+# Enable service mesh features
+connectInject:
+  enabled: true
+
+  # Add resource constraints
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "50m"
+    limits:
+      memory: "200Mi"
+      cpu: "100m"
+
+# Enable the Consul controller for CRDs
+controller:
+  enabled: true
+
+  # Add resource constraints
+  resources:
+    requests:
+      memory: "100Mi"
+      cpu: "50m"
+    limits:
+      memory: "200Mi"
+      cpu: "100m"
+
+# Configure the UI
+ui:
+  enabled: true
+  # Use ClusterIP for internal access, consider an Ingress for external access
+  service:
+    type: ClusterIP
+
+# Enable catalog sync for K8s service discovery
+syncCatalog:
+  enabled: true
+  default: true
+  toConsul: true
+  toK8S: true
+
+  # Add resource constraints
+  resources:
+    requests:
+      memory: "50Mi"
+      cpu: "50m"
+    limits:
+      memory: "100Mi"
+      cpu: "100m"

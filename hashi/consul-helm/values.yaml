@@ -1,0 +1,231 @@
+## Global parameters
+global:
+  # Name of the Consul cluster
+  name: consul
+
+  # Datacenter name for Consul
+  datacenter: dc1
+
+  # Consul image settings
+  image: "hashicorp/consul:1.16.0"
+  imageK8S: "hashicorp/consul-k8s-control-plane:1.2.0"
+
+  # TLS configuration
+  tls:
+    enabled: true
+    enableAutoEncrypt: true
+    # You can provide custom certificates or let Consul generate them
+    # caCert:
+    # caKey:
+
+  # ACL configuration
+  acls:
+    # Enable ACL system
+    manageSystemACLs: true
+    # Allow token replication from primary datacenter
+    tokenReplication: true
+    # Bootstrap token - will be auto-generated if not provided
+    # bootstrapToken:
+
+  # Gossip encryption key - will be auto-generated if not provided
+  # gossipEncryption:
+  #   secretName: consul-gossip-encryption-key
+  #   secretKey: key
+
+  # Metrics configuration
+  metrics:
+    enabled: true
+    enableAgentMetrics: true
+    agentMetricsRetentionTime: "1m"
+
+  # Transparent proxy configuration
+  transparentProxy:
+    defaultEnabled: true
+
+  # Resource settings
+  enablePodSecurityPolicies: false
+  enableConsulNamespaces: true
+
+  # Consul Federation configuration (for multi-datacenter)
+  federation:
+    enabled: false
+    # createFederationSecret: true
+
+## Server configuration
+server:
+  # Number of server replicas to run
+  replicas: 1
+  # Use 3 or 5 for production
+  # replicas: 3
+
+  # Storage settings - the server needs persistent storage for data
+  storage:
+    enabled: true
+    size: 10Gi
+    storageClass: null # Use default StorageClass
+
+  # Resource limits and requests
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+
+  # Affinity for server pod placement
+  affinity: |
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchLabels:
+              app: {{ template "consul.name" . }}
+              release: "{{ .Release.Name }}"
+              component: server
+          topologyKey: kubernetes.io/hostname
+
+  # Expose servers using a ClusterIP service
+  service:
+    enabled: true
+    type: ClusterIP
+
+  # Server configuration overrides
+  extraConfig: |
+    {
+      "log_level": "INFO"
+    }
+
+## Client configuration
+client:
+  # Whether to install Consul clients
+  enabled: true
+
+  # Enable gRPC for client agents
+  grpc: true
+
+  # Resource limits and requests
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 200Mi
+
+  # DaemonSet configuration (default is true to deploy clients on all nodes)
+  # Can be set to false to use a deployment instead
+  daemonSet:
+    enabled: true
+
+  # Additional annotations for client pods
+  annotations: {}
+
+  # Client configuration overrides
+  extraConfig: |
+    {
+      "log_level": "INFO"
+    }
+
+## Connect Inject configuration
+connectInject:
+  # Enable Connect Injection
+  enabled: true
+
+  # Default Configuration
+  default: true
+
+  # Metrics configuration
+  metrics:
+    defaultEnabled: true
+    defaultEnableMerging: true
+
+  # Transparent proxy configuration
+  transparentProxy:
+    defaultEnabled: true
+
+  # Resource settings for the injector
+  resources:
+    requests:
+      cpu: 50m
+      memory: 50Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+
+## Consul Controller configuration
+controller:
+  enabled: true
+
+  # Resource settings for the controller
+  resources:
+    requests:
+      cpu: 50m
+      memory: 50Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+
+## UI configuration
+ui:
+  # Enable the Consul UI
+  enabled: true
+
+  # Service settings for UI access
+  service:
+    type: ClusterIP
+
+  # Metrics settings
+  metrics:
+    enabled: true
+    provider: "prometheus"
+
+## Catalog Sync configuration
+syncCatalog:
+  # Enable syncing between Kubernetes services and Consul catalog
+  enabled: true
+
+  # Default settings
+  default: true
+
+  # Bidirectional synchronization
+  toConsul: true
+  toK8S: true
+
+  # Service prefix
+  k8sPrefix: ""
+  consulPrefix: ""
+
+  # Address type
+  k8sServiceEpSyncType: "ExternalFirst" # or can be "InternalOnly" or "ExternalOnly"
+
+  # Resource settings
+  resources:
+    requests:
+      cpu: 50m
+      memory: 50Mi
+    limits:
+      cpu: 50m
+      memory: 50Mi
+
+## DNS settings
+dns:
+  enabled: true
+  type: ClusterIP
+
+## Snapshot agent configuration
+snapshot:
+  enabled: false
+  # Schedule is a cron expression defining when snapshots should be taken
+  # schedule: "0 0 * * *"
+  # Storage options: local, aws, azure, or google
+  # storage: local
+
+## Configure PodSecurityPolicy settings
+podSecurityPolicy:
+  enabled: false
+
+## Configuraton for helm test
+tests:
+  enabled: true
