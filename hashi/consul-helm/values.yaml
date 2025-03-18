@@ -61,7 +61,7 @@ server:
   # Storage settings - the server needs persistent storage for data
   storage:
     enabled: true
-    size: 10Gi
+    size: "10Gi"
     storageClass: null # Use default StorageClass
 
   # Resource limits and requests

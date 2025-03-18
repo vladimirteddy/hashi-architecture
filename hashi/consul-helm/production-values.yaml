@@ -34,7 +34,7 @@ server:
   # Configure persistent storage
   storage:
     enabled: true
-    size: 10Gi
+    size: "10Gi"
     # Use a specific storage class for production
     # storageClass: "premium-ssd"
 
