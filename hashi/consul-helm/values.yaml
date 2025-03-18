@@ -63,7 +63,8 @@ server:
 
   # Storage settings - the server needs persistent storage for data
   storage:
-    enabled: false # Disable storage for now to simplify
+    enabled: false
+    # Remove any lingering storage configurations to avoid parsing issues
 
   # Resource limits and requests
   resources:
